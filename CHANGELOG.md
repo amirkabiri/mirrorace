@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/amirkabiri/fnpm/compare/v1.0.0...v1.1.0) (2026-04-30)
+
+
+### Bug Fixes
+
+* rename package to mirrorace to avoid npm name collision ([d406c45](https://github.com/amirkabiri/fnpm/commit/d406c4530a771dcdd3f91f5aa1e427e3cc00c307))
+
+
+### Features
+
+* rename to fastnpm ([506ca01](https://github.com/amirkabiri/fnpm/commit/506ca012541967b1e352501487ae1bb712bea393))
+
 # 1.0.0 (2026-04-30)
 
 
