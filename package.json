@@ -4,7 +4,7 @@
   "description": "Install npm packages from the fastest available mirror, with automatic fallback.",
   "type": "module",
   "bin": {
-    "mirrorace": "./src/cli.js"
+    "mirrorace": "./dist/cli.js"
   },
   "repository": {
     "type": "git",
@@ -19,21 +19,20 @@
     "provenance": true
   },
   "files": [
-    "src",
+    "dist",
     "README.md"
   ],
   "engines": {
     "node": ">=18"
   },
   "scripts": {
+    "build": "esbuild src/cli.js --bundle --platform=node --target=node18 --format=esm --outfile=dist/cli.js",
+    "prepublishOnly": "pnpm run build",
     "test": "node --test test/config.test.js test/proxy.test.js",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run --no-ci"
   },
   "packageManager": "pnpm@10.14.0",
-  "dependencies": {
-    "yaml": "^2.5.1"
-  },
   "keywords": [
     "npm",
     "pnpm",
@@ -49,9 +48,11 @@
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.6",
-    "@semantic-release/npm": "^12.0.2",
+    "@semantic-release/npm": "^13.1.5",
     "@semantic-release/release-notes-generator": "^14.1.0",
     "conventional-changelog-conventionalcommits": "^8.0.0",
-    "semantic-release": "^24.2.9"
+    "esbuild": "^0.25.0",
+    "semantic-release": "^24.2.9",
+    "yaml": "^2.5.1"
   }
 }
