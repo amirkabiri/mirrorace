@@ -26,7 +26,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "build": "esbuild src/cli.js --bundle --platform=node --target=node18 --format=cjs --outfile=dist/cli.cjs --log-override:empty-import-meta=silent",
+    "build": "esbuild src/cli.js --bundle --platform=node --target=node18 --format=cjs --outfile=dist/cli.cjs --minify --log-override:empty-import-meta=silent",
     "prepublishOnly": "pnpm run build",
     "test": "node --test test/config.test.js test/proxy.test.js",
     "release": "semantic-release",
