@@ -1,0 +1,34 @@
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import YAML from "yaml";
+import { normalizeMirrors } from "./mirrors.js";
+
+export async function loadConfig(configPath) {
+  if (!configPath) {
+    return { mirrors: normalizeMirrors([]) };
+  }
+  const absolute = resolve(process.cwd(), configPath);
+  let raw;
+  try {
+    raw = await readFile(absolute, "utf8");
+  } catch (err) {
+    throw new Error(`Failed to read config file at ${absolute}: ${err.message}`);
+  }
+  let parsed;
+  try {
+    parsed = YAML.parse(raw);
+  } catch (err) {
+    throw new Error(`Failed to parse YAML at ${absolute}: ${err.message}`);
+  }
+  const list = extractMirrorsList(parsed);
+  return { mirrors: normalizeMirrors(list) };
+}
+
+function extractMirrorsList(parsed) {
+  if (Array.isArray(parsed)) return parsed;
+  if (parsed && typeof parsed === "object") {
+    if (Array.isArray(parsed.mirrors)) return parsed.mirrors;
+    if (Array.isArray(parsed.registries)) return parsed.registries;
+  }
+  return [];
+}

@@ -1,0 +1,33 @@
+{
+  "name": "fnpm",
+  "version": "0.1.0",
+  "description": "Install npm packages from the fastest available mirror, with automatic fallback.",
+  "type": "module",
+  "bin": {
+    "fnpm": "./src/cli.js"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test 'test/**/*.test.js'"
+  },
+  "packageManager": "pnpm@10.14.0",
+  "dependencies": {
+    "yaml": "^2.5.1"
+  },
+  "keywords": [
+    "npm",
+    "pnpm",
+    "yarn",
+    "mirror",
+    "registry",
+    "proxy",
+    "fast"
+  ],
+  "license": "MIT"
+}
