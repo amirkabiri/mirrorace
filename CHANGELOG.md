@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/amirkabiri/mirrorace/compare/v1.4.0...v1.4.1) (2026-04-30)
+
+
+### Bug Fixes
+
+* retry ([95ec222](https://github.com/amirkabiri/mirrorace/commit/95ec222b11d750bff44394698fa431457cd83437))
+
 # [1.4.0](https://github.com/amirkabiri/mirrorace/compare/v1.3.0...v1.4.0) (2026-04-30)
 
 
