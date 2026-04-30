@@ -26,7 +26,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test 'test/**/*.test.js'",
+    "test": "node --test test/config.test.js test/proxy.test.js",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run --no-ci"
   },
