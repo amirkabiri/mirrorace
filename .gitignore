@@ -12,3 +12,4 @@ dist
 *.tgz
 .tmp
 .pnpm-store
+.idea
