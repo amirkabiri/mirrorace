@@ -1,11 +1,11 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import YAML from "yaml";
-import { normalizeMirrors } from "./mirrors.js";
+import { DEFAULT_MIRRORS, normalizeMirrors } from "./mirrors.js";
 
 export async function loadConfig(configPath) {
   if (!configPath) {
-    return { mirrors: normalizeMirrors([]) };
+    return { mirrors: normalizeMirrors(DEFAULT_MIRRORS) };
   }
   const absolute = resolve(process.cwd(), configPath);
   let raw;
@@ -21,7 +21,7 @@ export async function loadConfig(configPath) {
     throw new Error(`Failed to parse YAML at ${absolute}: ${err.message}`);
   }
   const list = extractMirrorsList(parsed);
-  return { mirrors: normalizeMirrors(list) };
+  return { mirrors: normalizeMirrors([...list, ...DEFAULT_MIRRORS]) };
 }
 
 function extractMirrorsList(parsed) {

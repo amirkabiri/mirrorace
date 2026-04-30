@@ -1,5 +1,12 @@
 export const OFFICIAL_NPM_REGISTRY = "https://registry.npmjs.org";
 
+export const DEFAULT_MIRRORS = [
+  "https://package-mirror.liara.ir/repository/npm/pnpm",
+  "https://mirror-npm.runflare.com",
+  "https://archive.ito.gov.ir/npm/",
+  "https://mirror2.chabokan.net/npm/",
+];
+
 export function normalizeMirrorUrl(input) {
   if (typeof input !== "string") return null;
   const trimmed = input.trim();
