@@ -52,7 +52,6 @@
     "@semantic-release/release-notes-generator": "^14.1.0",
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "esbuild": "^0.25.0",
-    "semantic-release": "^24.2.9",
-    "yaml": "^2.5.1"
+    "semantic-release": "^24.2.9"
   }
 }

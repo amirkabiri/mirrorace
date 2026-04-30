@@ -19,7 +19,7 @@
          │
          ▼
 ┌─────────────────┐
-│  Config         │ ← YAML parsing, mirror normalization
+│  Config         │ ← JSON parsing, mirror normalization
 │  (config.js)    │    Always appends official npm registry as fallback
 └────────┬────────┘
          │
@@ -42,7 +42,7 @@
 
 - **Runtime:** Node.js >= 18, ES Modules ("type": "module")
 - **HTTP:** Node's native `http` module + Web Standard `fetch()` API
-- **YAML:** `yaml` package for config parsing
+- **Config format:** JSON (native `JSON.parse`, zero dependencies)
 - **Build:** `esbuild` bundles `src/cli.js` → `dist/cli.cjs` (CommonJS)
 - **Testing:** Node's built-in `node:test` runner, `assert/strict`
 - **Release:** semantic-release with conventional commits
@@ -63,7 +63,7 @@
 ```
 src/
   cli.js          ← Entry point, CLI arg parsing, main() function
-  config.js       ← YAML config loading, mirror extraction
+  config.js       ← JSON config loading, mirror extraction
   mirrors.js      ← Mirror URL normalization, DEFAULT_MIRRORS list
   runner.js       ← Spawns npm/pnpm/yarn with registry override
   proxy/
@@ -141,19 +141,25 @@ pnpm run release  # semantic-release
 
 ## Configuration
 
-**Config file** (`-c <path>` or `--config`): YAML with either:
+**Config file** (`-c <path>` or `--config`): JSON file with either:
 
-```yaml
-mirrors:
-  - https://registry.npmjs.org
-  - https://registry.npmmirror.com
+```json
+{
+  "mirrors": [
+    "https://registry.npmjs.org",
+    "https://registry.npmmirror.com",
+    "https://mirrors.cloud.tencent.com/npm"
+  ]
+}
 ```
 
-or plain array:
+Or a bare array:
 
-```yaml
-- https://registry.npmmirror.com
-- https://mirrors.cloud.tencent.com/npm
+```json
+[
+  "https://registry.npmjs.org",
+  "https://registry.npmmirror.com"
+]
 ```
 
 If no config provided, uses `DEFAULT_MIRRORS` from `mirrors.js` plus official npm registry appended automatically.
@@ -163,7 +169,7 @@ Official npm registry URL: `https://registry.npmjs.org` (constant `OFFICIAL_NPM_
 ## CLI Interface
 
 ```
-mirrorace [-c <mirrors.yaml>] [--verbose] <pnpm|npm|yarn> [args...]
+mirrorace [-c <mirrors.json>] [--verbose] <pnpm|npm|yarn> [args...]
 ```
 
 Supported package managers: npm, pnpm, yarn (strict Set check in `runner.js`).
@@ -223,8 +229,9 @@ TARBALL_FIRST_BYTE_TIMEOUT_MS = 30000
 
 Standard order within files:
 1. Node built-ins (`node:`)
-2. Third-party packages (`yaml`, etc.)
-3. Local modules (relative paths, sorted by depth)
+2. Local modules (relative paths, sorted by depth)
+
+No third-party runtime dependencies — config uses native JSON, yaml package removed.
 
 ## Git & Release
 

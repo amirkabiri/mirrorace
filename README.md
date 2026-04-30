@@ -21,7 +21,7 @@ Tarball URLs in metadata responses are rewritten to canonical `registry.npmjs.or
 No install needed — just use `npx`:
 
 ```bash
-npx mirrorace -c mirrors.yaml pnpm install
+npx mirrorace -c mirrors.json pnpm install
 ```
 
 Or install globally:
@@ -42,14 +42,14 @@ Requires Node.js >= 18.
 ## Usage
 
 ```
-mirrorace [-c <mirrors.yaml>] [--verbose] <pnpm|npm|yarn> [args...]
+mirrorace [-c <mirrors.json>] [--verbose] <pnpm|npm|yarn> [args...]
 ```
 
 Examples:
 
 ```bash
-mirrorace -c mirrors.yaml pnpm install
-mirrorace -c mirrors.yaml npm install lodash
+mirrorace -c mirrors.json pnpm install
+mirrorace -c mirrors.json npm install lodash
 mirrorace yarn add react              # no -c: only uses the official registry
 mirrorace --verbose pnpm install      # prints proxy activity to stderr
 ```
@@ -58,20 +58,25 @@ Everything after the package manager name is forwarded to it untouched.
 
 ## Mirrors file
 
-A simple YAML list:
+A simple JSON file. Either an object with a `mirrors` key:
 
-```yaml
-mirrors:
-  - https://registry.npmjs.org
-  - https://registry.npmmirror.com
-  - https://mirrors.cloud.tencent.com/npm
+```json
+{
+  "mirrors": [
+    "https://registry.npmjs.org",
+    "https://registry.npmmirror.com",
+    "https://mirrors.cloud.tencent.com/npm"
+  ]
+}
 ```
 
-A bare YAML array also works:
+Or a bare array:
 
-```yaml
-- https://registry.npmjs.org
-- https://registry.npmmirror.com
+```json
+[
+  "https://registry.npmjs.org",
+  "https://registry.npmmirror.com"
+]
 ```
 
 The `-c` flag is optional. If you don't pass it, `mirrorace` just uses the official npm registry (and still gives you graceful retries). The official registry is always added to the list as a final fallback even if you forget it.

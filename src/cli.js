@@ -3,16 +3,16 @@ import { loadConfig } from "./config.js";
 import { startProxy } from "./proxy/server.js";
 import { runPackageManager, SUPPORTED_PMS } from "./runner.js";
 
-const USAGE = `Usage: mirrorace [-c <mirrors.yaml>] [--verbose] <pnpm|npm|yarn> [args...]
+const USAGE = `Usage: mirrorace [-c <mirrors.json>] [--verbose] <pnpm|npm|yarn> [args...]
 
 Options:
-  -c, --config <path>   Path to a YAML file listing mirror URLs.
+  -c, --config <path>   Path to a JSON file listing mirror URLs.
   --verbose             Print proxy activity to stderr.
   -h, --help            Show this help message.
   -v, --version         Show version.
 
 Examples:
-  npx mirrorace -c mirrors.yaml pnpm install
+  npx mirrorace -c mirrors.json pnpm install
   npx mirrorace npm install lodash
   npx mirrorace yarn add react
 `;

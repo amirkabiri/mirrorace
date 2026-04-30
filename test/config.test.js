@@ -32,13 +32,13 @@ test("normalizeMirrors filters invalid urls", () => {
   assert.ok(!out.some((u) => u.startsWith("ftp://")));
 });
 
-test("loadConfig reads yaml file", async () => {
+test("loadConfig reads JSON file", async () => {
   const dir = await mkdtemp(join(tmpdir(), "mirrorace-cfg-"));
   try {
-    const file = join(dir, "mirrors.yaml");
+    const file = join(dir, "mirrors.json");
     await writeFile(
       file,
-      "mirrors:\n  - https://a.example\n  - https://b.example\n",
+      JSON.stringify({ mirrors: ["https://a.example", "https://b.example"] }, null, 2),
       "utf8",
     );
     const cfg = await loadConfig(file);
@@ -55,11 +55,11 @@ test("loadConfig with no path returns default mirrors plus official registry", a
   assert.deepEqual(cfg.mirrors, normalizeMirrors(DEFAULT_MIRRORS));
 });
 
-test("loadConfig accepts plain array yaml", async () => {
+test("loadConfig accepts plain array JSON", async () => {
   const dir = await mkdtemp(join(tmpdir(), "mirrorace-cfg-"));
   try {
-    const file = join(dir, "mirrors.yaml");
-    await writeFile(file, "- https://x.example\n- https://y.example\n", "utf8");
+    const file = join(dir, "mirrors.json");
+    await writeFile(file, JSON.stringify(["https://x.example", "https://y.example"], null, 2), "utf8");
     const cfg = await loadConfig(file);
     assert.ok(cfg.mirrors.includes("https://x.example"));
     assert.ok(cfg.mirrors.includes("https://y.example"));
