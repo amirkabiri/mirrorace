@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/amirkabiri/mirrorace/compare/v1.0.0...v1.1.0) (2026-04-30)
+
+
+### Bug Fixes
+
+* point package.json repository at mirrorace GitHub repo ([7d9647d](https://github.com/amirkabiri/mirrorace/commit/7d9647d5e7ce9c1f8189f262a97c99ea130653dc))
+
+
+### Features
+
+* add Iranian npm mirrors as defaults ([29d2bfe](https://github.com/amirkabiri/mirrorace/commit/29d2bfe94404479af7ac720dd10e54dd79ecff6e))
+
 # 1.0.0 (2026-04-30)
 
 
