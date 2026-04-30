@@ -33,7 +33,7 @@ npm install -g mirrorace
 Or download script using wget:
 
 ```bash
-wget -O mirrorace.cjs https://github.com/amirkabiri/mirrorace/releases/download/v1.4.0/cli.cjs
+wget -O mirrorace.cjs https://github.com/amirkabiri/mirrorace/releases/download/v1.5.0/cli.cjs
 node mirrorace.cjs pnpm i
 ```
 
