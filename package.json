@@ -4,7 +4,7 @@
   "description": "Install npm packages from the fastest available mirror, with automatic fallback.",
   "type": "module",
   "bin": {
-    "mirrorace": "./dist/cli.js"
+    "mirrorace": "./dist/cli.cjs"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "build": "esbuild src/cli.js --bundle --platform=node --target=node18 --format=esm --outfile=dist/cli.js",
+    "build": "esbuild src/cli.js --bundle --platform=node --target=node18 --format=cjs --outfile=dist/cli.cjs --log-override:empty-import-meta=silent",
     "prepublishOnly": "pnpm run build",
     "test": "node --test test/config.test.js test/proxy.test.js",
     "release": "semantic-release",

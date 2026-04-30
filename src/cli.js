@@ -140,7 +140,10 @@ async function readPackageJson() {
   const { readFile } = await import("node:fs/promises");
   const { fileURLToPath } = await import("node:url");
   const { dirname, resolve } = await import("node:path");
-  const here = dirname(fileURLToPath(import.meta.url));
+  const here =
+    typeof __dirname === "string"
+      ? __dirname
+      : dirname(fileURLToPath(import.meta.url));
   const pkgPath = resolve(here, "..", "package.json");
   const text = await readFile(pkgPath, "utf8");
   return JSON.parse(text);
