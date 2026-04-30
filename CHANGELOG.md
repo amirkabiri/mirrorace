@@ -1,3 +1,16 @@
+# [1.4.0](https://github.com/amirkabiri/mirrorace/compare/v1.3.0...v1.4.0) (2026-04-30)
+
+
+### Bug Fixes
+
+* enable tree shaking ([e57dd93](https://github.com/amirkabiri/mirrorace/commit/e57dd93b4fb019544b24028ce3c3a3b84d6c542b))
+* minify final output ([bfeed4c](https://github.com/amirkabiri/mirrorace/commit/bfeed4c4db5be66ce092eccc0f30b03f80d6660a))
+
+
+### Features
+
+* switch from yaml to json ([208591e](https://github.com/amirkabiri/mirrorace/commit/208591ef23b154d59667abb751323ab60d9b345c))
+
 # [1.3.0](https://github.com/amirkabiri/mirrorace/compare/v1.2.0...v1.3.0) (2026-04-30)
 
 
