@@ -8,11 +8,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/amirkabiri/fnpm.git"
+    "url": "git+https://github.com/amirkabiri/mirrorace.git"
   },
-  "homepage": "https://github.com/amirkabiri/fnpm#readme",
+  "homepage": "https://github.com/amirkabiri/mirrorace#readme",
   "bugs": {
-    "url": "https://github.com/amirkabiri/fnpm/issues"
+    "url": "https://github.com/amirkabiri/mirrorace/issues"
   },
   "publishConfig": {
     "access": "public",
