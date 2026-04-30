@@ -131,7 +131,7 @@ function raceWave({ wave, tarballPath, headers, stats, log }) {
 async function pipeWinnerToClient({ res, winner, stats, log }) {
   res.statusCode = 200;
   copyResponseHeaders(winner.response, res);
-  res.setHeader("x-fnpm-mirror", winner.mirror);
+  res.setHeader("x-fastnpm-mirror", winner.mirror);
 
   const startedAt = Date.now();
   let bytesSent = 0;

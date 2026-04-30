@@ -3,7 +3,7 @@ import { loadConfig } from "./config.js";
 import { startProxy } from "./proxy/server.js";
 import { runPackageManager, SUPPORTED_PMS } from "./runner.js";
 
-const USAGE = `Usage: fnpm [-c <mirrors.yaml>] [--verbose] <pnpm|npm|yarn> [args...]
+const USAGE = `Usage: fastnpm [-c <mirrors.yaml>] [--verbose] <pnpm|npm|yarn> [args...]
 
 Options:
   -c, --config <path>   Path to a YAML file listing mirror URLs.
@@ -12,9 +12,9 @@ Options:
   -v, --version         Show version.
 
 Examples:
-  npx fnpm -c mirrors.yaml pnpm install
-  npx fnpm npm install lodash
-  npx fnpm yarn add react
+  npx fastnpm -c mirrors.yaml pnpm install
+  npx fastnpm npm install lodash
+  npx fastnpm yarn add react
 `;
 
 async function main(argv) {
@@ -36,7 +36,7 @@ async function main(argv) {
   }
 
   const log = parsed.verbose
-    ? (msg) => process.stderr.write(`[fnpm] ${msg}\n`)
+    ? (msg) => process.stderr.write(`[fastnpm] ${msg}\n`)
     : () => {};
 
   let config;
