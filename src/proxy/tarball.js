@@ -2,6 +2,8 @@ import { Readable } from "node:stream";
 
 const TARBALL_FIRST_BYTE_TIMEOUT_MS = 30000;
 const RACE_PARALLELISM = 3;
+const MAX_RETRIES = 10;
+const RETRY_DELAY_MS = 50;
 
 export async function handleTarball({ req, res, mirrors, stats, tarballPath, log }) {
   const ordered = stats.sorted(mirrors);
@@ -66,8 +68,10 @@ function raceWave({ wave, tarballPath, headers, stats, log }) {
       const timeout = setTimeout(() => {
         controller.abort(new Error("first byte timeout"));
       }, TARBALL_FIRST_BYTE_TIMEOUT_MS);
+
       const url = `${mirror}${tarballPath}`;
-      const promise = fetch(url, { headers, signal: controller.signal })
+
+      const promise = fetchWithRetry(url, { headers, signal: controller.signal }, mirror, stats)
         .then((response) => {
           clearTimeout(timeout);
           if (!response.ok) {
@@ -126,6 +130,18 @@ function raceWave({ wave, tarballPath, headers, stats, log }) {
       );
     }
   });
+}
+
+async function fetchWithRetry(url, options, mirror, stats, attempt = 1) {
+  try {
+    return await fetch(url, options);
+  } catch (err) {
+    if (attempt >= MAX_RETRIES) {
+      throw err;
+    }
+    await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
+    return fetchWithRetry(url, options, mirror, stats, attempt + 1);
+  }
 }
 
 async function pipeWinnerToClient({ res, winner, stats, log }) {
