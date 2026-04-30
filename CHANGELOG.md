@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/amirkabiri/mirrorace/compare/v1.4.1...v1.5.0) (2026-04-30)
+
+
+### Features
+
+* pinned ip of default mirrors ([4eaae5b](https://github.com/amirkabiri/mirrorace/commit/4eaae5b320d66d33eb20b2d1daf107d5db9e9308))
+
 ## [1.4.1](https://github.com/amirkabiri/mirrorace/compare/v1.4.0...v1.4.1) (2026-04-30)
 
 
