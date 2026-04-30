@@ -64,7 +64,7 @@ async function handleRequest(req, res, ctx) {
   if (path === "/" || path === "/-/ping") {
     res.statusCode = 200;
     res.setHeader("content-type", "application/json");
-    res.end(JSON.stringify({ ok: true, service: "fastnpm" }));
+    res.end(JSON.stringify({ ok: true, service: "mirrorace" }));
     return;
   }
 

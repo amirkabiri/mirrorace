@@ -33,7 +33,7 @@ test("normalizeMirrors filters invalid urls", () => {
 });
 
 test("loadConfig reads yaml file", async () => {
-  const dir = await mkdtemp(join(tmpdir(), "fastnpm-cfg-"));
+  const dir = await mkdtemp(join(tmpdir(), "mirrorace-cfg-"));
   try {
     const file = join(dir, "mirrors.yaml");
     await writeFile(
@@ -56,7 +56,7 @@ test("loadConfig with no path returns only official registry", async () => {
 });
 
 test("loadConfig accepts plain array yaml", async () => {
-  const dir = await mkdtemp(join(tmpdir(), "fastnpm-cfg-"));
+  const dir = await mkdtemp(join(tmpdir(), "mirrorace-cfg-"));
   try {
     const file = join(dir, "mirrors.yaml");
     await writeFile(file, "- https://x.example\n- https://y.example\n", "utf8");

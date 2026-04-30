@@ -1,10 +1,10 @@
-# fastnpm
+# mirrorace
 
 Install npm packages from the **fastest available mirror**, with **automatic fallback** when a mirror is down or doesn't have a package. Works as a drop-in front-end for `pnpm`, `npm`, and `yarn`.
 
 ## How it works
 
-`fastnpm` boots a tiny HTTP proxy on a random local port that speaks the npm registry protocol, then runs your package manager with `--registry=http://127.0.0.1:<port>`.
+`mirrorace` boots a tiny HTTP proxy on a random local port that speaks the npm registry protocol, then runs your package manager with `--registry=http://127.0.0.1:<port>`.
 
 For every package metadata or tarball request, the proxy:
 
@@ -21,13 +21,13 @@ Tarball URLs in metadata responses are rewritten to canonical `registry.npmjs.or
 No install needed — just use `npx`:
 
 ```bash
-npx fastnpm -c mirrors.yaml pnpm install
+npx mirrorace -c mirrors.yaml pnpm install
 ```
 
 Or install globally:
 
 ```bash
-npm install -g fastnpm
+npm install -g mirrorace
 ```
 
 Requires Node.js >= 18.
@@ -35,16 +35,16 @@ Requires Node.js >= 18.
 ## Usage
 
 ```
-fastnpm [-c <mirrors.yaml>] [--verbose] <pnpm|npm|yarn> [args...]
+mirrorace [-c <mirrors.yaml>] [--verbose] <pnpm|npm|yarn> [args...]
 ```
 
 Examples:
 
 ```bash
-fastnpm -c mirrors.yaml pnpm install
-fastnpm -c mirrors.yaml npm install lodash
-fastnpm yarn add react              # no -c: only uses the official registry
-fastnpm --verbose pnpm install      # prints proxy activity to stderr
+mirrorace -c mirrors.yaml pnpm install
+mirrorace -c mirrors.yaml npm install lodash
+mirrorace yarn add react              # no -c: only uses the official registry
+mirrorace --verbose pnpm install      # prints proxy activity to stderr
 ```
 
 Everything after the package manager name is forwarded to it untouched.
@@ -67,7 +67,7 @@ A bare YAML array also works:
 - https://registry.npmmirror.com
 ```
 
-The `-c` flag is optional. If you don't pass it, `fastnpm` just uses the official npm registry (and still gives you graceful retries). The official registry is always added to the list as a final fallback even if you forget it.
+The `-c` flag is optional. If you don't pass it, `mirrorace` just uses the official npm registry (and still gives you graceful retries). The official registry is always added to the list as a final fallback even if you forget it.
 
 ## Behavior reference
 

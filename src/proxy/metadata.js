@@ -66,7 +66,7 @@ export async function handleMetadata({ req, res, mirrors, stats, packagePath, lo
 
   res.statusCode = 200;
   res.setHeader("content-type", contentType);
-  res.setHeader("x-fastnpm-mirror", winner.mirror);
+  res.setHeader("x-mirrorace-mirror", winner.mirror);
   res.setHeader("content-length", Buffer.byteLength(body));
   res.end(body);
 }

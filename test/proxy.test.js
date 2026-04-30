@@ -23,7 +23,7 @@ test("metadata: races mirrors and returns the fastest one", async () => {
   try {
     const out = await fetchText(`${proxy.url}/lodash`);
     assert.equal(out.status, 200);
-    assert.equal(out.headers.get("x-fastnpm-mirror"), fast.url);
+    assert.equal(out.headers.get("x-mirrorace-mirror"), fast.url);
     const json = JSON.parse(out.text);
     assert.equal(json.name, "lodash");
   } finally {
@@ -59,7 +59,7 @@ test("metadata: falls back when first mirror returns 404", async () => {
   try {
     const out = await fetchText(`${proxy.url}/lodash`);
     assert.equal(out.status, 200);
-    assert.equal(out.headers.get("x-fastnpm-mirror"), ok.url);
+    assert.equal(out.headers.get("x-mirrorace-mirror"), ok.url);
   } finally {
     await proxy.close();
     await broken.close();
@@ -74,7 +74,7 @@ test("tarball: fastest mirror wins the race", async () => {
   try {
     const out = await fetchBuffer(`${proxy.url}/lodash/-/lodash-1.0.0.tgz`);
     assert.equal(out.status, 200);
-    assert.equal(out.headers.get("x-fastnpm-mirror"), fast.url);
+    assert.equal(out.headers.get("x-mirrorace-mirror"), fast.url);
     assert.equal(out.buf.toString(), "fake-tarball-from-fast");
   } finally {
     await proxy.close();
@@ -90,7 +90,7 @@ test("tarball: falls back to next mirror when one is 404", async () => {
   try {
     const out = await fetchBuffer(`${proxy.url}/lodash/-/lodash-1.0.0.tgz`);
     assert.equal(out.status, 200);
-    assert.equal(out.headers.get("x-fastnpm-mirror"), ok.url);
+    assert.equal(out.headers.get("x-mirrorace-mirror"), ok.url);
   } finally {
     await proxy.close();
     await broken.close();
@@ -120,7 +120,7 @@ test("tarball: succeeds when two of three mirrors are down (5xx)", async () => {
   try {
     const out = await fetchBuffer(`${proxy.url}/lodash/-/lodash-1.0.0.tgz`);
     assert.equal(out.status, 200);
-    assert.equal(out.headers.get("x-fastnpm-mirror"), ok.url);
+    assert.equal(out.headers.get("x-mirrorace-mirror"), ok.url);
   } finally {
     await proxy.close();
     await downA.close();
