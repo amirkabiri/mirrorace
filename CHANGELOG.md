@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/amirkabiri/mirrorace/compare/v1.2.0...v1.3.0) (2026-04-30)
+
+
+### Features
+
+* publish dist/cli.cjs to github releases ([75773e7](https://github.com/amirkabiri/mirrorace/commit/75773e74ac63b5006be9a4dcf0aa90d12a685159))
+
 # [1.2.0](https://github.com/amirkabiri/mirrorace/compare/v1.1.0...v1.2.0) (2026-04-30)
 
 
