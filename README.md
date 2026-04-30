@@ -30,6 +30,13 @@ Or install globally:
 npm install -g mirrorace
 ```
 
+Or download script using wget:
+
+```bash
+wget -O mirrorace.cjs https://github.com/amirkabiri/mirrorace/releases/download/v1.3.0/cli.cjs
+node mirrorace.cjs pnpm i
+```
+
 Requires Node.js >= 18.
 
 ## Usage
