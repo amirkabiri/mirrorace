@@ -7,6 +7,13 @@ export const DEFAULT_MIRRORS = [
   "https://mirror2.chabokan.net/npm/",
 ];
 
+export const DEFAULT_MIRROR_IPS = {
+  "https://package-mirror.liara.ir/repository/npm/pnpm": "185.208.181.186",
+  "https://mirror-npm.runflare.com": "185.126.10.222",
+  "https://archive.ito.gov.ir/npm": "2.187.253.113",
+  "https://mirror2.chabokan.net/npm": "185.173.129.51",
+};
+
 export function normalizeMirrorUrl(input) {
   if (typeof input !== "string") return null;
   const trimmed = input.trim();

@@ -1,4 +1,5 @@
 import { OFFICIAL_NPM_REGISTRY } from "../mirrors.js";
+import { fetchMirror } from "./fetch.js";
 
 const METADATA_TIMEOUT_MS = 8000;
 
@@ -15,7 +16,7 @@ export async function handleMetadata({ req, res, mirrors, stats, packagePath, lo
     controllers.set(mirror, controller);
     const timeout = setTimeout(() => controller.abort(new Error("metadata timeout")), METADATA_TIMEOUT_MS);
     const target = `${mirror}${packagePath}`;
-    return fetch(target, { headers, signal: controller.signal })
+    return fetchMirror(target, { headers, signal: controller.signal }, mirror)
       .then(async (response) => {
         clearTimeout(timeout);
         if (!response.ok) {

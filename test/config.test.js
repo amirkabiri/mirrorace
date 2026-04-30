@@ -4,7 +4,7 @@ import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { loadConfig } from "../src/config.js";
-import { DEFAULT_MIRRORS, normalizeMirrors, OFFICIAL_NPM_REGISTRY } from "../src/mirrors.js";
+import { DEFAULT_MIRROR_IPS, DEFAULT_MIRRORS, normalizeMirrors, OFFICIAL_NPM_REGISTRY } from "../src/mirrors.js";
 
 test("normalizeMirrors strips trailing slashes and dedupes", () => {
   const out = normalizeMirrors([
@@ -53,6 +53,13 @@ test("loadConfig reads JSON file", async () => {
 test("loadConfig with no path returns default mirrors plus official registry", async () => {
   const cfg = await loadConfig(null);
   assert.deepEqual(cfg.mirrors, normalizeMirrors(DEFAULT_MIRRORS));
+});
+
+test("default mirror IPs cover normalized default mirrors", () => {
+  const defaults = normalizeMirrors(DEFAULT_MIRRORS).filter((mirror) => mirror !== OFFICIAL_NPM_REGISTRY);
+  for (const mirror of defaults) {
+    assert.match(DEFAULT_MIRROR_IPS[mirror], /^\d{1,3}(?:\.\d{1,3}){3}$/u);
+  }
 });
 
 test("loadConfig accepts plain array JSON", async () => {

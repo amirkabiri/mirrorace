@@ -1,4 +1,5 @@
 import { Readable } from "node:stream";
+import { fetchMirror } from "./fetch.js";
 
 const TARBALL_FIRST_BYTE_TIMEOUT_MS = 30000;
 const RACE_PARALLELISM = 3;
@@ -134,7 +135,7 @@ function raceWave({ wave, tarballPath, headers, stats, log }) {
 
 async function fetchWithRetry(url, options, mirror, stats, attempt = 1) {
   try {
-    return await fetch(url, options);
+    return await fetchMirror(url, options, mirror);
   } catch (err) {
     if (attempt >= MAX_RETRIES) {
       throw err;
