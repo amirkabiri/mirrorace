@@ -90,6 +90,43 @@ pnpm test
 
 Tests use a set of in-process fake registries to verify race, fallback, and down-mirror behavior without hitting the network.
 
+## Releasing
+
+Releases are fully automated via GitHub Actions and [semantic-release](https://github.com/semantic-release/semantic-release).
+
+Every push to `main` runs the test matrix; on success it analyzes the new commits using [Conventional Commits](https://www.conventionalcommits.org/), bumps the version accordingly (`fix:` → patch, `feat:` → minor, `BREAKING CHANGE:` → major), updates `CHANGELOG.md`, tags the release, publishes to npm, and creates a GitHub release.
+
+### One-time setup on the GitHub repo
+
+1. Replace `OWNER` in `package.json` (`repository`, `homepage`, `bugs`) with your actual GitHub username/org.
+2. Create an npm automation token: <https://www.npmjs.com/settings/YOUR-USER/tokens> (type **Automation**).
+3. Add it as a repo secret named `NPM_TOKEN` under **Settings → Secrets and variables → Actions**.
+4. Under **Settings → Actions → General → Workflow permissions**, enable **Read and write permissions** so the workflow can push the version bump and create releases.
+
+`GITHUB_TOKEN` is provided by Actions automatically — no setup needed.
+
+### Commit message format
+
+Use Conventional Commits to drive versioning:
+
+```
+feat: add yarn berry support
+fix: handle aborted streams gracefully
+docs: clarify mirrors.yaml format
+chore: update dependencies
+feat!: drop Node 16 support      # major bump
+```
+
+Commits that don't match (e.g. `chore:`, `docs:`, `test:`) won't trigger a release.
+
+### Local dry-run
+
+To preview what semantic-release would do without publishing:
+
+```bash
+pnpm release:dry
+```
+
 ## License
 
 MIT

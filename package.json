@@ -6,6 +6,18 @@
   "bin": {
     "fnpm": "./src/cli.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amirkabiri/fnpm.git"
+  },
+  "homepage": "https://github.com/amirkabiri/fnpm#readme",
+  "bugs": {
+    "url": "https://github.com/amirkabiri/fnpm/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "files": [
     "src",
     "README.md"
@@ -14,7 +26,9 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test 'test/**/*.test.js'"
+    "test": "node --test 'test/**/*.test.js'",
+    "release": "semantic-release",
+    "release:dry": "semantic-release --dry-run --no-ci"
   },
   "packageManager": "pnpm@10.14.0",
   "dependencies": {
@@ -29,5 +43,15 @@
     "proxy",
     "fast"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.6",
+    "@semantic-release/npm": "^12.0.2",
+    "@semantic-release/release-notes-generator": "^14.1.0",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
+    "semantic-release": "^24.2.9"
+  }
 }
