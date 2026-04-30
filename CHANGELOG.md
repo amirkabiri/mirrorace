@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/amirkabiri/mirrorace/compare/v1.1.0...v1.2.0) (2026-04-30)
+
+
+### Bug Fixes
+
+* bundle ([5f8d258](https://github.com/amirkabiri/mirrorace/commit/5f8d2582cecebccb2f78b7d184e638927c9cb04c))
+
+
+### Features
+
+* bundle ([9bbdc65](https://github.com/amirkabiri/mirrorace/commit/9bbdc6543d66bce47a2dac3d67fb57f9d2d97b25))
+
 # [1.1.0](https://github.com/amirkabiri/mirrorace/compare/v1.0.0...v1.1.0) (2026-04-30)
 
 
