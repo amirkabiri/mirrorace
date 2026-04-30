@@ -83,6 +83,8 @@ The `-c` flag is optional. If you don't pass it, `mirrorace` just uses the offic
 
 ## Development
 
+This repo is set up for **pnpm** only (`pnpm-lock.yaml`). Use `pnpm install` and `pnpm test`; do not use `npm install` here.
+
 ```bash
 pnpm install
 pnpm test

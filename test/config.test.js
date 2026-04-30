@@ -4,7 +4,7 @@ import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { loadConfig } from "../src/config.js";
-import { normalizeMirrors, OFFICIAL_NPM_REGISTRY } from "../src/mirrors.js";
+import { DEFAULT_MIRRORS, normalizeMirrors, OFFICIAL_NPM_REGISTRY } from "../src/mirrors.js";
 
 test("normalizeMirrors strips trailing slashes and dedupes", () => {
   const out = normalizeMirrors([
@@ -50,9 +50,9 @@ test("loadConfig reads yaml file", async () => {
   }
 });
 
-test("loadConfig with no path returns only official registry", async () => {
+test("loadConfig with no path returns default mirrors plus official registry", async () => {
   const cfg = await loadConfig(null);
-  assert.deepEqual(cfg.mirrors, [OFFICIAL_NPM_REGISTRY]);
+  assert.deepEqual(cfg.mirrors, normalizeMirrors(DEFAULT_MIRRORS));
 });
 
 test("loadConfig accepts plain array yaml", async () => {
