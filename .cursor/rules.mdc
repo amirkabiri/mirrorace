@@ -1,0 +1,270 @@
+# Mirrorace Development Rules
+
+## Project Overview
+
+**mirrorace** is a Node.js CLI tool that acts as a smart proxy for npm registries. It runs a local HTTP proxy that races requests across multiple npm mirrors and selects the fastest responding mirror, with automatic fallback on failures. It rewrites tarball URLs to ensure lockfile portability.
+
+- Repository: https://github.com/amirkabiri/mirrorace
+- License: MIT
+- Node.js: >= 18 (required)
+- Package manager: pnpm@10.14.0 (strictly pinned)
+- Build tool: esbuild (bundles to CommonJS)
+
+## Architecture
+
+```
+┌─────────────────┐
+│  CLI (cli.js)   │ ← Parses args, loads config, spawns package manager
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Config         │ ← YAML parsing, mirror normalization
+│  (config.js)    │    Always appends official npm registry as fallback
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Proxy Server   │ ← HTTP server on random localhost port
+│  (server.js)    │    Routes to metadata vs tarball handlers
+└────────┬────────┘
+         │
+    ┌────┴────┬─────────────┐
+    ▼         ▼             ▼
+┌──────┐  ┌─────────┐  ┌──────────┐
+│Meta- │  │ Tarball │  │  Stats   │
+│data  │  │ Handler │  │ Tracking │
+│handler│ │ (waves) │ │  (EWMA)  │
+└──────┘  └─────────┘  └──────────┘
+```
+
+## Technology Stack
+
+- **Runtime:** Node.js >= 18, ES Modules ("type": "module")
+- **HTTP:** Node's native `http` module + Web Standard `fetch()` API
+- **YAML:** `yaml` package for config parsing
+- **Build:** `esbuild` bundles `src/cli.js` → `dist/cli.cjs` (CommonJS)
+- **Testing:** Node's built-in `node:test` runner, `assert/strict`
+- **Release:** semantic-release with conventional commits
+
+## Code Style Conventions
+
+- ES Modules: always use `import`/`export`, never `require`
+- Node built-ins: use `node:` protocol imports (e.g., `import { readFile } from "node:fs/promises"`)
+- File layout: one component per file in `src/`
+- Naming: camelCase for variables/functions, PascalCase for classes
+- Error handling: throw `Error` objects with descriptive messages; avoid swallowing errors silently
+- Streams: use `Readable.fromWeb()` to convert Web Streams (fetch body) to Node streams
+- Regex: always use `u` (unicode) flag; avoid deprecated features
+- No TypeScript; no JSDoc comments in code
+
+## Source Tree
+
+```
+src/
+  cli.js          ← Entry point, CLI arg parsing, main() function
+  config.js       ← YAML config loading, mirror extraction
+  mirrors.js      ← Mirror URL normalization, DEFAULT_MIRRORS list
+  runner.js       ← Spawns npm/pnpm/yarn with registry override
+  proxy/
+    server.js     ← HTTP server setup, request routing
+    metadata.js   ← Metadata race logic, URL rewriting
+    tarball.js    ← Tarball streaming with wave-based races
+    stats.js      ← MirrorStats class (EWMA throughput scoring)
+test/
+  config.test.js        ← Config parsing/normalization unit tests
+  proxy.test.js         ← Proxy integration tests (races, fallbacks)
+  helpers/
+    fake-registry.js   ← Mock npm registry for tests
+dist/
+  cli.cjs          ← Built bundle (commit this!)
+```
+
+## Critical Algorithms
+
+### Mirror Selection (stats.js)
+
+Mirrors scored using EWMA (Exponentially Weighted Moving Average) of throughput:
+
+- `score = throughputScore / (1 + failures * 5)`
+- Throughput tracked in bytes/sec
+- On success: `failures *= 0.85`
+- On failure: `failures = failures * 0.6 + 1`
+- Alpha for throughput EWMA: `0.4`
+
+Winner determined by `stats.sorted(mirrors)`; fastest & most reliable wins.
+
+### Metadata Race (metadata.js)
+
+- Races ALL mirrors in parallel (Promise.allSettled style via custom `firstFulfilled`)
+- First mirror with `response.ok` wins; losers aborted immediately
+- Timeout: 8 seconds per mirror
+- JSON response parsed; `dist.tarball` URLs rewritten to `https://registry.npmjs.org` canonical form
+- Headers filtered to remove `host`, `content-length`, `connection`, `accept-encoding`
+
+### Tarball Wave Race (tarball.js)
+
+- Mirrors processed in waves of 3 (`RACE_PARALLELISM = 3`)
+- Each wave races mirrors in parallel
+- Winner is first mirror that starts streaming bytes (not just first response header)
+- Winner piped to client via Node stream
+- If stream fails (bytes already sent), connection destroyed; fallback to next wave
+- Timeout: 30 seconds for first byte
+- After success, throughput recorded to stats
+
+### URL Rewriting (metadata.js)
+
+- `rewriteTarballUrls()` recursively walks JSON
+- `canonicalizeTarballUrl()` extracts tarball path and prefixes with `OFFICIAL_NPM_REGISTRY`
+- Regex: `\/(?:@[^/]+\/)?[^/]+\/-\/[^/]+\.tgz$`
+- Ensures lockfiles reference `registry.npmjs.org`, preserving portability
+
+## Build & Test
+
+**CRITICAL:** Use `pnpm` exclusively for all development tasks. Do not use `npm` or `yarn`.
+
+```bash
+# Install dependencies (always use pnpm)
+pnpm install
+
+# Build
+pnpm run build    # esbuild → dist/cli.cjs
+
+# Test (MUST pass after every change)
+pnpm test         # node --test test/*.test.js
+
+# Release (CI/CD)
+pnpm run release  # semantic-release
+```
+
+**Mandatory:** Run `pnpm test` after every code change and verify all tests pass before committing. Never commit code that breaks existing tests.
+
+## Configuration
+
+**Config file** (`-c <path>` or `--config`): YAML with either:
+
+```yaml
+mirrors:
+  - https://registry.npmjs.org
+  - https://registry.npmmirror.com
+```
+
+or plain array:
+
+```yaml
+- https://registry.npmmirror.com
+- https://mirrors.cloud.tencent.com/npm
+```
+
+If no config provided, uses `DEFAULT_MIRRORS` from `mirrors.js` plus official npm registry appended automatically.
+
+Official npm registry URL: `https://registry.npmjs.org` (constant `OFFICIAL_NPM_REGISTRY`).
+
+## CLI Interface
+
+```
+mirrorace [-c <mirrors.yaml>] [--verbose] <pnpm|npm|yarn> [args...]
+```
+
+Supported package managers: npm, pnpm, yarn (strict Set check in `runner.js`).
+
+All args after package manager name forwarded directly.
+
+Environment variables set for package manager:
+- `npm_config_registry`
+- `NPM_CONFIG_REGISTRY`
+- `YARN_NPM_REGISTRY_SERVER`
+- `YARN_REGISTRY`
+
+## Logging
+
+Verbose mode (`--verbose`): logs to stderr with `[mirrorace]` prefix:
+- `mirrors: <list>`
+- `proxy listening on http://127.0.0.1:<port>`
+- `metadata: winner=<mirror>`
+- `tarball: winner=<mirror> delivered XB in Yms (ZK/s)`
+
+## Error Handling
+
+- Proxy errors: `500 { error: "internal proxy error" }`
+- Method not allowed: `405` with `Allow: GET, HEAD`
+- Not found: `404 { error: "not found" }`
+- All mirrors failed (non-404): `502`
+- All mirrors 404: `404` with descriptive message
+- `x-mirrorace-mirror` header included on every successful response
+
+## Performance Notes
+
+- Metadata: 8s timeout; tarball: 30s timeout for first byte
+- Tarball waves run 3 mirrors at a time to limit concurrent connections
+- Throughput measured only if bytes sent & elapsed > 0; otherwise just recordSuccess
+- `stats.recordThroughput()` uses EWMA to smooth performance over time
+
+## Testing Patterns
+
+- Fake registry (`test/helpers/fake-registry.js`): creates local HTTP server simulating npm registry
+- Configurable: `delayMs`, `status`, `body`, `tarballBytes`, `notFoundFor`, `responseChunkDelayMs`
+- Tests use Node's built-in `node:test` framework; no Jest/Mocha
+- Each test cleans up proxy and fake registries in `finally` blocks
+- Integration tests verify race conditions, fallback, URL rewriting
+
+## Important Constants
+
+```js
+EWMA_ALPHA = 0.4
+FAILURE_DECAY = 0.6
+SUCCESS_DECAY = 0.85
+RACE_PARALLELISM = 3
+METADATA_TIMEOUT_MS = 8000
+TARBALL_FIRST_BYTE_TIMEOUT_MS = 30000
+```
+
+## Import Order
+
+Standard order within files:
+1. Node built-ins (`node:`)
+2. Third-party packages (`yaml`, etc.)
+3. Local modules (relative paths, sorted by depth)
+
+## Git & Release
+
+- Branch: `main`
+- Conventional commits required for auto-release
+- Release via `semantic-release`: updates `CHANGELOG.md`, tags, publishes to npm, creates GitHub release
+- Assets attached: `dist/cli.cjs`
+- Commit analyzer: conventional-changelog-conventionalcommits
+
+## Important Files to Never Modify
+
+- `package.json`: packageManager field pinned to `pnpm@10.14.0`; do not change
+- `dist/cli.cjs`: generated file; never edit manually
+- `.gitignore`: standard Node ignores
+
+## Common Pitfalls
+
+- **Forgetting official registry**: Always appended as last fallback via `normalizeMirrors`
+- **Tarball URL rewriting**: Must canonicalize to npmjs.org, not mirror URLs
+- **AbortController leaks**: Always abort losing candidates in both metadata and tarball handlers
+- **Headers**: Don't forward `host`, `content-length`, `connection`, `accept-encoding`
+- **Stream errors**: Destroy response on error after bytes sent to prevent partial writes
+- **Windows shell**: `spawn` uses `shell: platform === 'win32'`
+
+## Contributing
+
+**Development workflow:**
+1. Use `pnpm` for all package manager operations (installing, building, testing)
+2. Make focused changes to a single module
+3. Run `pnpm test` and verify all tests pass
+4. Add new tests for new behavior
+5. Keep modules small and focused
+
+**AI Agent Instructions:**
+- After making any code change, update this `rules.mdc` file if architectural patterns, constants, or conventions change
+- Document new constants, algorithms, or workflow modifications in the appropriate section
+- Keep this file synchronized with the codebase
+
+**Never:**
+- Use npm or yarn (packageManager is strictly pinned to pnpm@10.14.0)
+- Commit code that fails tests
+- Modify `dist/cli.cjs` manually (it's generated)
+- Change the packageManager field in package.json
