@@ -5,6 +5,7 @@ export const DEFAULT_MIRRORS = [
   "https://mirror-npm.runflare.com",
   "https://archive.ito.gov.ir/npm/",
   "https://mirror2.chabokan.net/npm/",
+  "https://npm.iranserver.com/repository/npm/"
 ];
 
 export const DEFAULT_MIRROR_IPS = {
@@ -12,6 +13,7 @@ export const DEFAULT_MIRROR_IPS = {
   "https://mirror-npm.runflare.com": "185.126.10.222",
   "https://archive.ito.gov.ir/npm": "2.187.253.113",
   "https://mirror2.chabokan.net/npm": "185.173.129.51",
+  "https://npm.iranserver.com/repository/npm": "185.255.89.114",
 };
 
 export function normalizeMirrorUrl(input) {
