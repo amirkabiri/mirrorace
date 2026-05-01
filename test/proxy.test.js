@@ -67,6 +67,21 @@ test("metadata: falls back when first mirror returns 404", async () => {
   }
 });
 
+test("metadata: returns 404 when all mirrors return 404", async () => {
+  const a = await startFakeRegistry({ name: "a", status: 404 });
+  const b = await startFakeRegistry({ name: "b", status: 404 });
+  const proxy = await startProxy({ mirrors: [a.url, b.url] });
+  try {
+    const out = await fetchText(`${proxy.url}/lodash`);
+    assert.equal(out.status, 404);
+    assert.match(out.text, /not found/u);
+  } finally {
+    await proxy.close();
+    await a.close();
+    await b.close();
+  }
+});
+
 test("tarball: fastest mirror wins the race", async () => {
   const slow = await startFakeRegistry({ name: "slow", delayMs: 200 });
   const fast = await startFakeRegistry({ name: "fast", delayMs: 0 });

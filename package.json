@@ -28,7 +28,7 @@
   "scripts": {
     "build": "esbuild src/cli.js --bundle --platform=node --target=node18 --format=cjs --outfile=dist/cli.cjs --minify --tree-shaking=true --log-override:empty-import-meta=silent",
     "prepublishOnly": "pnpm run build",
-    "test": "node --test test/config.test.js test/proxy.test.js",
+    "test": "node --test test/config.test.js test/proxy.test.js test/e2e.test.js",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run --no-ci"
   },

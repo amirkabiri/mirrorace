@@ -20,9 +20,10 @@ export async function handleMetadata({ req, res, mirrors, stats, packagePath, lo
       .then(async (response) => {
         clearTimeout(timeout);
         if (!response.ok) {
-          stats.recordFailure(mirror);
-          errors.push({ mirror, status: response.status });
-          throw new Error(`status ${response.status}`);
+          const err = new Error(`status ${response.status}`);
+          err.status = response.status;
+          err.mirror = mirror;
+          throw err;
         }
         const text = await response.text();
         return { mirror, response, text };
@@ -31,7 +32,7 @@ export async function handleMetadata({ req, res, mirrors, stats, packagePath, lo
         clearTimeout(timeout);
         if (!resolved) {
           stats.recordFailure(mirror);
-          errors.push({ mirror, error: err.message });
+          errors.push({ mirror, status: err.status, error: err.message });
         }
         throw err;
       });
@@ -42,6 +43,10 @@ export async function handleMetadata({ req, res, mirrors, stats, packagePath, lo
     winner = await firstFulfilled(attempts);
   } catch {
     log?.(`metadata: all mirrors failed for ${packagePath}`);
+    if (errors.length > 0 && errors.every((error) => error.status === 404)) {
+      sendError(res, 404, `Metadata not found on any mirror: ${packagePath}`);
+      return;
+    }
     sendError(res, 502, `Failed to fetch metadata for ${packagePath} from all mirrors`);
     return;
   }
