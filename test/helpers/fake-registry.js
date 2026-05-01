@@ -24,7 +24,7 @@ export async function startFakeRegistry({
   let serverPort = 0;
   const server = createServer((req, res) => {
     const path = req.url || "/";
-    const isTarball = /\/-\/[^/]+\.tgz$/u.test(path);
+    const isTarball = /(?:\/-\/[^/]+|\/tarballs\/[^/]+)\.tgz(?:$|\?)/u.test(path);
 
     if (isTarball) hits.tarball += 1;
     else hits.metadata += 1;
@@ -73,7 +73,8 @@ export async function startFakeRegistry({
             res.end(buf);
           }
         } else {
-          const payload = body || defaultMetadata(name, `http://127.0.0.1:${serverPort}${path}`);
+          const requestUrl = `http://127.0.0.1:${serverPort}${path}`;
+          const payload = typeof body === "function" ? body(requestUrl) : body || defaultMetadata(name, requestUrl);
           const text = JSON.stringify(payload);
           res.setHeader("content-type", "application/json");
           res.setHeader("content-length", String(Buffer.byteLength(text)));
