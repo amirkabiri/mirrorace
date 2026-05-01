@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/amirkabiri/mirrorace/compare/v1.5.0...v1.6.0) (2026-05-01)
+
+
+### Features
+
+* new iraninan npm mirror ([c0b25b1](https://github.com/amirkabiri/mirrorace/commit/c0b25b1b3dda63436d0db3ae7464213629d12d01))
+
 # [1.5.0](https://github.com/amirkabiri/mirrorace/compare/v1.4.1...v1.5.0) (2026-04-30)
 
 

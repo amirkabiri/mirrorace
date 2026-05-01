@@ -1,6 +1,6 @@
 {
   "name": "mirrorace",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Install npm packages from the fastest available mirror, with automatic fallback.",
   "type": "module",
   "bin": {
