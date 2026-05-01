@@ -1,7 +1,7 @@
 import http from "node:http";
 import https from "node:https";
 import { Readable } from "node:stream";
-import { DEFAULT_MIRROR_IPS } from "../mirrors.js";
+import { DEFAULT_MIRROR_IPS, normalizeMirrorUrl } from "../mirrors.js";
 
 const DNS_ERROR_CODES = new Set(["ENOTFOUND", "EAI_AGAIN"]);
 
@@ -9,7 +9,7 @@ export async function fetchMirror(url, options = {}, mirror) {
   try {
     return await fetch(url, options);
   } catch (err) {
-    const fallbackIp = DEFAULT_MIRROR_IPS[mirror];
+    const fallbackIp = DEFAULT_MIRROR_IPS[normalizeMirrorUrl(mirror) || mirror];
     if (!fallbackIp || !isDnsResolutionError(err)) {
       throw err;
     }
