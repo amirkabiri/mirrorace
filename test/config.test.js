@@ -74,3 +74,34 @@ test("loadConfig accepts plain array JSON", async () => {
     await rm(dir, { recursive: true, force: true });
   }
 });
+
+test("loadConfig accepts registries as an alias for mirrors", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "mirrorace-cfg-"));
+  try {
+    const file = join(dir, "mirrors.json");
+    await writeFile(file, JSON.stringify({ registries: ["https://r.example"] }, null, 2), "utf8");
+    const cfg = await loadConfig(file);
+    assert.ok(cfg.mirrors.includes("https://r.example"));
+    assert.ok(cfg.mirrors.includes(OFFICIAL_NPM_REGISTRY));
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test("loadConfig reports unreadable files with the resolved path", async () => {
+  await assert.rejects(
+    loadConfig("missing-mirrors.json"),
+    /Failed to read config file at .*missing-mirrors\.json/u,
+  );
+});
+
+test("loadConfig reports invalid JSON", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "mirrorace-cfg-"));
+  try {
+    const file = join(dir, "mirrors.json");
+    await writeFile(file, "{", "utf8");
+    await assert.rejects(loadConfig(file), /Failed to parse JSON/u);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});

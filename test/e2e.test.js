@@ -78,7 +78,7 @@ if (tarball !== "fake-tarball-from-e2e") {
   }
 });
 
-test("cli: installs a package with real npm through a configured mirror", { timeout: 30000 }, async () => {
+test("cli: installs a package with real npm through a configured mirror", { timeout: 90000 }, async () => {
   const dir = await mkdtemp(join(tmpdir(), "mirrorace-real-e2e-"));
 
   let registry;

@@ -117,6 +117,7 @@ export async function startFakeRegistry({
 function defaultMetadata(mirrorName, requestUrl) {
   const u = new URL(requestUrl);
   const pkgName = decodeURIComponent(u.pathname.replace(/^\/+/, ""));
+  const tarballBaseName = pkgName.split("/").at(-1);
   return {
     name: pkgName,
     "dist-tags": { latest: "1.0.0" },
@@ -125,7 +126,7 @@ function defaultMetadata(mirrorName, requestUrl) {
         name: pkgName,
         version: "1.0.0",
         dist: {
-          tarball: `${u.origin}/${pkgName}/-/${pkgName}-1.0.0.tgz`,
+          tarball: `${u.origin}/${pkgName}/-/${tarballBaseName}-1.0.0.tgz`,
           integrity: "sha512-fake",
         },
       },
