@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/amirkabiri/mirrorace/compare/v1.6.0...v1.6.1) (2026-05-01)
+
+
+### Bug Fixes
+
+* mirror's pinned ip bug fixed ([20e0e7f](https://github.com/amirkabiri/mirrorace/commit/20e0e7f73f4beaf72e35f5ac55596d70c1f3da53))
+
 # [1.6.0](https://github.com/amirkabiri/mirrorace/compare/v1.5.0...v1.6.0) (2026-05-01)
 
 
